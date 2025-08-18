@@ -45,7 +45,6 @@ def get_audit_logs(token, connectors):
                 f"{json_count} new audit log events found or identical pagination token. Stopping requests..."
             )
             loop_counter = 0
-            dataaccess.set("link", new_url)
         else:
             logger.info(
                 f"{json_count} new audit log events found. Contining to next page..."
@@ -53,3 +52,6 @@ def get_audit_logs(token, connectors):
             for connector in connectors:
                 connector.store_events(json_data)
             request_url = new_url
+
+        # Always update pagination link to avoid pulling duplicate logs.
+        dataaccess.set("link", new_url)
